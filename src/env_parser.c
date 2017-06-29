@@ -1,4 +1,4 @@
-/* A Bison parser, made from ../../toolwrap/src/env_parser.y
+/* A Bison parser, made from env_parser.y
    by GNU bison 1.35.  */
 
 #define YYBISON 1  /* Identify Bison output.  */
@@ -6,10 +6,11 @@
 # define	ENV_SET	257
 # define	ENV_PREPEND	258
 # define	ENV_APPEND	259
-# define	REQUIRES	260
-# define	WORD	261
+# define	ENV_UNSET	260
+# define	REQUIRES	261
+# define	WORD	262
 
-#line 1 "../../toolwrap/src/env_parser.y"
+#line 1 "env_parser.y"
 
 
 #define YYSTYPE char*
@@ -22,6 +23,7 @@
 static char* env_get_var(const char*);
 static char* concat(const char*, const char*);
 static void  env_set(const char*, const char*);
+static void  env_unset(const char*);
 static void  env_append(const char*, const char*);
 static void  env_prepend(const char*, const char*);
 static void  env_requires(const char*);
@@ -35,12 +37,12 @@ static void  env_requires(const char*);
 
 
 
-#define	YYFINAL		25
+#define	YYFINAL		27
 #define	YYFLAG		-32768
-#define	YYNTBASE	11
+#define	YYNTBASE	12
 
 /* YYTRANSLATE(YYLEX) -- Bison token number corresponding to YYLEX. */
-#define YYTRANSLATE(x) ((unsigned)(x) <= 261 ? yytranslate[x] : 17)
+#define YYTRANSLATE(x) ((unsigned)(x) <= 262 ? yytranslate[x] : 18)
 
 /* YYTRANSLATE[YYLEX] -- Bison token number corresponding to YYLEX. */
 static const char yytranslate[] =
@@ -48,7 +50,7 @@ static const char yytranslate[] =
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     8,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     9,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -57,7 +59,7 @@ static const char yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     9,     2,    10,     2,     2,     2,     2,
+       2,     2,     2,    10,     2,    11,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -71,21 +73,21 @@ static const char yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     3,     4,     5,
-       6,     7
+       6,     7,     8
 };
 
 #if YYDEBUG
 static const short yyprhs[] =
 {
        0,     0,     1,     4,     6,     8,    12,    16,    20,    23,
-      25,    28,    33
+      26,    28,    31,    36
 };
 static const short yyrhs[] =
 {
-      -1,    12,    11,     0,    13,     0,    14,     0,     3,     7,
-      15,     0,     4,     7,    15,     0,     5,     7,    15,     0,
-       6,     7,     0,    16,     0,    16,    15,     0,     8,     9,
-      15,    10,     0,     7,     0
+      -1,    13,    12,     0,    14,     0,    15,     0,     3,     8,
+      16,     0,     4,     8,    16,     0,     5,     8,    16,     0,
+       6,     8,     0,     7,     8,     0,    17,     0,    17,    16,
+       0,     9,    10,    16,    11,     0,     8,     0
 };
 
 #endif
@@ -94,8 +96,8 @@ static const short yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined. */
 static const short yyrline[] =
 {
-       0,    32,    33,    36,    38,    41,    43,    44,    47,    52,
-      54,    57,    59
+       0,    34,    35,    38,    40,    43,    45,    46,    47,    50,
+      55,    57,    60,    62
 };
 #endif
 
@@ -106,23 +108,23 @@ static const short yyrline[] =
 static const char *const yytname[] =
 {
   "$", "error", "$undefined.", "ENV_SET", "ENV_PREPEND", "ENV_APPEND", 
-  "REQUIRES", "WORD", "'$'", "'{'", "'}'", "input", "stmt", "envset_stmt", 
-  "requires_stmt", "expr", "var", 0
+  "ENV_UNSET", "REQUIRES", "WORD", "'$'", "'{'", "'}'", "input", "stmt", 
+  "envset_stmt", "requires_stmt", "expr", "var", 0
 };
 #endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives. */
 static const short yyr1[] =
 {
-       0,    11,    11,    12,    12,    13,    13,    13,    14,    15,
-      15,    16,    16
+       0,    12,    12,    13,    13,    14,    14,    14,    14,    15,
+      16,    16,    17,    17
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN. */
 static const short yyr2[] =
 {
-       0,     0,     2,     1,     1,     3,     3,     3,     2,     1,
-       2,     4,     1
+       0,     0,     2,     1,     1,     3,     3,     3,     2,     2,
+       1,     2,     4,     1
 };
 
 /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -130,47 +132,49 @@ static const short yyr2[] =
    error. */
 static const short yydefact[] =
 {
-       1,     0,     0,     0,     0,     1,     3,     4,     0,     0,
-       0,     8,     2,    12,     0,     5,     9,     6,     7,     0,
-      10,     0,    11,     0,     0,     0
+       1,     0,     0,     0,     0,     0,     1,     3,     4,     0,
+       0,     0,     8,     9,     2,    13,     0,     5,    10,     6,
+       7,     0,    11,     0,    12,     0,     0,     0
 };
 
 static const short yydefgoto[] =
 {
-      12,     5,     6,     7,    15,    16
+      14,     6,     7,     8,    17,    18
 };
 
 static const short yypact[] =
 {
-      -1,     4,     5,     6,     7,    -1,-32768,-32768,     1,     1,
-       1,-32768,-32768,-32768,    -3,-32768,     1,-32768,-32768,     1,
-  -32768,     8,-32768,    15,    16,-32768
+      -1,     4,     5,     6,     7,     8,    -1,-32768,-32768,     1,
+       1,     1,-32768,-32768,-32768,-32768,    -3,-32768,     1,-32768,
+  -32768,     1,-32768,     9,-32768,    17,    18,-32768
 };
 
 static const short yypgoto[] =
 {
-      17,-32768,-32768,-32768,    -9,-32768
+      19,-32768,-32768,-32768,   -10,-32768
 };
 
 
-#define	YYLAST		18
+#define	YYLAST		20
 
 
 static const short yytable[] =
 {
-      17,    18,     1,     2,     3,     4,    19,    20,    13,    14,
-      21,     8,     9,    10,    11,    24,    25,    23,    22
+      19,    20,     1,     2,     3,     4,     5,    21,    22,    15,
+      16,    23,     9,    10,    11,    12,    13,    26,    27,    25,
+      24
 };
 
 static const short yycheck[] =
 {
-       9,    10,     3,     4,     5,     6,     9,    16,     7,     8,
-      19,     7,     7,     7,     7,     0,     0,     0,    10
+      10,    11,     3,     4,     5,     6,     7,    10,    18,     8,
+       9,    21,     8,     8,     8,     8,     8,     0,     0,     0,
+      11
 };
 #define YYPURE 1
 
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
-#line 3 "/_TOOLS_/dist/gnu-bison-1.35/i686-pc-linux2.4.2/share/bison/bison.simple"
+#line 3 "/usr/share/bison/bison.simple"
 
 /* Skeleton output parser for bison,
 
@@ -458,6 +462,7 @@ yystrlen (yystr)
 
 # ifndef yystpcpy
 #  if defined (__GLIBC__) && defined (_STRING_H) && defined (_GNU_SOURCE)
+#   include <string.h>
 #   define yystpcpy stpcpy
 #  else
 /* Copy YYSRC to YYDEST, returning the address of the terminating '\0' in
@@ -483,7 +488,7 @@ yystpcpy (yydest, yysrc)
 # endif
 #endif
 
-#line 315 "/_TOOLS_/dist/gnu-bison-1.35/i686-pc-linux2.4.2/share/bison/bison.simple"
+#line 316 "/usr/share/bison/bison.simple"
 
 
 /* The user can define YYPARSE_PARAM as the name of an argument to be passed
@@ -877,32 +882,36 @@ yyreduce:
   switch (yyn) {
 
 case 5:
-#line 42 "../../toolwrap/src/env_parser.y"
+#line 44 "env_parser.y"
 {env_set(yyvsp[-1],yyvsp[0]);}
     break;
 case 6:
-#line 43 "../../toolwrap/src/env_parser.y"
+#line 45 "env_parser.y"
 {env_prepend(yyvsp[-1],yyvsp[0]);}
     break;
 case 7:
-#line 44 "../../toolwrap/src/env_parser.y"
+#line 46 "env_parser.y"
 {env_append(yyvsp[-1],yyvsp[0]);}
     break;
 case 8:
-#line 48 "../../toolwrap/src/env_parser.y"
+#line 47 "env_parser.y"
+{env_unset(yyvsp[0]);}
+    break;
+case 9:
+#line 51 "env_parser.y"
 {env_requires(yyvsp[0]);}
     break;
-case 10:
-#line 54 "../../toolwrap/src/env_parser.y"
+case 11:
+#line 57 "env_parser.y"
 { yyval =  concat(yyvsp[-1],yyvsp[0]);}
     break;
-case 11:
-#line 58 "../../toolwrap/src/env_parser.y"
+case 12:
+#line 61 "env_parser.y"
 { yyval = env_get_var(yyvsp[-1]); }
     break;
 }
 
-#line 705 "/_TOOLS_/dist/gnu-bison-1.35/i686-pc-linux2.4.2/share/bison/bison.simple"
+#line 706 "/usr/share/bison/bison.simple"
 
 
   yyvsp -= yylen;
@@ -1133,28 +1142,28 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 63 "../../toolwrap/src/env_parser.y"
+#line 66 "env_parser.y"
 
 
-static char* 
+static char*
 env_get_var(const char* var)
 {
 	char* ret;
-	
+
 	ret=getenv(var);
 	return ret ? ret : "";
-	
-}	
 
-static char* 
+}
+
+static char*
 concat(const char* s1, const char* s2)
 {
 	char* ret;
 	size_t s1_len, s2_len;
-	
+
 	s1_len=strlen(s1);
 	s2_len=strlen(s2);
-	
+
 	ret = (char*) malloc (s1_len + s2_len + 1);
 	memcpy(ret, s1, s1_len);
 	memcpy(ret+ s1_len, s2, s2_len);
@@ -1167,27 +1176,37 @@ env_set(const char* name, const char* val)
 {
 	char* n;
 	size_t nlen;
-	
+
 	nlen =strlen(name)+strlen(val)+1 +1;
 	n=(char*) malloc(nlen);
 	snprintf(n,nlen,"%s=%s", name, val);
 	putenv(n);
-	
+
 	if (g_flags & FL_DEBUG)
 		log_msg(LOG_DEBUG, "setenv %s", n);
-	
+
 }
 
-static void 
+static void
+env_unset(const char* name)
+{
+	char* n;
+	unsetenv(name);
+
+	if (g_flags & FL_DEBUG)
+		log_msg(LOG_DEBUG, "unsetenv %s", name);
+}
+
+static void
 env_prepend(const char* name, const char* val)
 {
 	char* n;
 	size_t nlen;
-	
+
 	char* old;
-	
+
 	old =getenv(name);
-	
+
 	nlen=strlen(name) + 1 + strlen(val) + 	(old ? strlen(old) : 0) +1 +1;
 	n = (char*) malloc (nlen);
 	if (old)
@@ -1195,24 +1214,24 @@ env_prepend(const char* name, const char* val)
 	else
 		snprintf(n,nlen,"%s=%s", name, val);
 	putenv(n);
-	
+
 	if (g_flags & FL_DEBUG)
 		log_msg(LOG_DEBUG, "setenv %s", n);
-			
+
 	/* do not free(n): on some libc, this is now a part of our env. */
 }
 
 
-static void 
+static void
 env_append(const char* name, const char* val)
 {
 	char* n;
 	size_t nlen;
-	
+
 	char* old;
-	
+
 	old =getenv(name);
-	
+
 	nlen=strlen(name) + 1 + strlen(val) + 	(old ? strlen(old) : 0) +1 +1;
 	n = (char*) malloc (nlen);
 	if (old)
@@ -1220,11 +1239,11 @@ env_append(const char* name, const char* val)
 	else
 		snprintf(n,nlen,"%s=%s", name, val);
 	putenv(n);
-	
+
 
 	if (g_flags & FL_DEBUG)
 		log_msg(LOG_DEBUG, "setenv %s", n);
-			
+
 	/* do not free(n): on some libc, this is now a part of our env. */
 }
 

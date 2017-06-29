@@ -1,5 +1,6 @@
 /*
  *      Copyright (C) 2004,2004  bmonthy@users.sourceforge.net
+ *      Copyright (C) 2017       strassenbahn@pc1715.de
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -158,7 +159,7 @@ load_env(const char* toolname)
 	{
 		if ( access (envfile, R_OK)==0) {
 			if (g_flags & FL_DEBUG)
-				log_msg(LOG_DEBUG, "Trying TOOLWRAP_POLICIES file %s", envfile);
+				log_msg(LOG_DEBUG, "Loading TOOLWRAP_POLICIES file %s", envfile);
 			load_policy_file(envfile);
 		}
 	}
@@ -194,7 +195,7 @@ load_env(const char* toolname)
 		log_msg(LOG_DEBUG,"resolved package: %s", pkgname);
 
 
-	if ( env_load_from_package(pkgname, toolname)!=0 )
+	if ( (env_load_from_package("__init__", toolname) !=0) || env_load_from_package(pkgname, toolname)!=0 )
 	{
 		log_msg(LOG_INFO, "Could not parse environment file for package %s.", pkgname);
 		return 1;

@@ -1,5 +1,6 @@
 /*
  *      Copyright (C) 2004,2004  bmonthy@users.sourceforge.net
+ *      Copyright (C) 2017       strassenbahn@pc1715.de
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
