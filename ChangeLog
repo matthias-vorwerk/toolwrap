@@ -1,0 +1,195 @@
+2005-04-26 14:56  bmonthy
+
+	* ChangeLog, NEWS, configure, configure.ac, src/Makefile.in,
+	  src/assert.c, src/env.c, src/env_lex.c, src/env_lex.h,
+	  src/hash.c, toolwrap.spec: release 1.0.0
+
+2005-04-26 14:08  bmonthy
+
+	* doc/ref.sgml: minor doc update
+
+2005-03-29 12:10  bmonthy
+
+	* configure, configure.ac, toolwrap.spec: PACKAGE_VERSION is now
+	  -cvs
+
+2005-03-29 11:42  bmonthy
+
+	* ChangeLog, NEWS, README, configure, configure.ac: release 0.2
+
+2005-03-29 11:30  bmonthy
+
+	* Makefile.am, Makefile.in, aclocal.m4, config.h.in, configure,
+	  toolwrap-0.1-1.spec, toolwrap.spec, doc/Makefile.in,
+	  src/Makefile.in: un-versionned toolwrap.spec
+
+2005-03-21 12:32  bmonthy
+
+	* ChangeLog, Makefile.in, src/env_parser.c, src/env_parser.h:
+	  resync ChangeLog with CVS logs
+
+2005-03-20 19:04  bmonthy
+
+	* Makefile.in, aclocal.m4, config.h.in, configure, configure.ac,
+	  doc/Makefile.in, src/Makefile.in, src/toolwrap.c, src/utils.c,
+	  src/utils.h: basename() fallback
+
+2005-03-20 15:07  bmonthy
+
+	* src/: utils.c, utils.h: fix #ifdef ... #endif logic
+
+2005-03-19 00:18  bmonthy
+
+	* src/: Makefile.am, Makefile.in: fix install target (create
+	  toolwrap-xx.yy/man/man1 directory)
+
+2005-03-19 00:08  bmonthy
+
+	* src/: Makefile.am, Makefile.in: remove -C switch (install target)
+
+2005-03-18 23:58  bmonthy
+
+	* src/: Makefile.am, Makefile.in: remove -D switch (install target)
+
+2005-03-18 23:56  bmonthy
+
+	* src/: Makefile.am, Makefile.in, env_lex.c, env_lex.h: move tokens
+	  declarations
+
+2005-03-18 23:21  bmonthy
+
+	* Makefile.in, aclocal.m4, configure, configure.ac,
+	  doc/Makefile.in, src/Makefile.am, src/Makefile.in,
+	  src/toolwrap.c: update Makefiles
+
+2005-03-18 23:20  bmonthy
+
+	* src/: env.c, env.h, env_lex.h, env_parser.c, env_parser.h,
+	  env_parser.y: fix gcc warning messages
+
+2005-03-18 18:13  bmonthy
+
+	* ChangeLog, src/Makefile.am, src/Makefile.in, src/toolwrap.1,
+	  src/toolwrap.c: fix where toolwrap.1 is created (in source tree)
+
+2005-03-17 11:10  bmonthy
+
+	* src/toolwrap.c: minor fix: options parsing
+
+2005-03-17 10:57  bmonthy
+
+	* toolwrap-0.1-1.spec, Makefile.am, Makefile.in: new spec file
+
+2005-03-16 17:40  bmonthy
+
+	* configure, configure.ac: update PACKAGE_VERSION to 0.2-cvs
+
+2005-03-16 17:02  bmonthy
+
+	* NEWS: release 0.1
+
+2005-03-16 16:57  bmonthy
+
+	* configure, configure.ac, doc/ref.sgml, src/toolwrap.1: release
+	  0.1 ls
+
+2005-03-16 15:43  bmonthy
+
+	* src/env.c: do not update env for __default__ pkg
+
+2005-03-16 15:22  bmonthy
+
+	* Makefile.in, configure, configure.ac, src/Makefile.am,
+	  src/Makefile.in, src/policies.default, src/toolwrap-policies.in:
+	  add toolowrap-policies.in
+
+2005-03-16 15:17  bmonthy
+
+	* src/: env_lex.c, hash.c: code comment cleanup
+
+2005-03-16 15:16  bmonthy
+
+	* src/: Makefile.am, Makefile.in, toolwrap.1, toolwrap.c: fix
+	  manual page  & --help output
+
+2005-03-16 15:15  bmonthy
+
+	* src/: Makefile.am, Makefile.in, env_lex.c: fix lex rules
+
+2005-03-15 20:30  bmonthy
+
+	* src/toolwrap.c: fix call to getopt_long()
+
+2005-03-15 19:38  bmonthy
+
+	* Makefile.in, aclocal.m4, config.h.in, doc/Makefile.in,
+	  src/Makefile.am, src/Makefile.in, src/assert.c, src/assert.h,
+	  src/env.c, src/env.h, src/env_lex.c, src/env_lex.h,
+	  src/env_lex.l, src/env_parser.c, src/env_parser.h,
+	  src/env_parser.y, src/hash.c, src/hash.h, src/list.c, src/list.h,
+	  src/log.c, src/log.h, src/policy.c, src/policy.h, src/toolwrap.c,
+	  src/toolwrap.h, src/utils.c, src/utils.h: new lexical analyzer
+
+2005-03-15 19:34  bmonthy
+
+	* configure, configure.ac, src/utils.c, src/utils.h: add setenv()
+	  in utils.c
+
+2005-03-15 19:32  bmonthy
+
+	* TODO: add TODO
+
+2005-03-14 19:45  bmonthy
+
+	* ChangeLog, src/hash.c: fix hash_append()
+
+2005-03-12 00:31  bmonthy
+
+	* doc/ref.sgml: [no log message]
+
+2005-03-12 00:27  bmonthy
+
+	* src/: list.c, list.h, log.c, log.h, policy.c, policy.h,
+	  toolwrap.c, toolwrap.h, utils.c, utils.h: remove duplicate
+	  copyright notice
+
+2005-03-11 23:54  bmonthy
+
+	* doc/ref.sgml: update doc
+
+2005-03-11 22:36  bmonthy
+
+	* ChangeLog: Update ChangeLog
+
+2005-03-11 22:32  bmonthy
+
+	* COPYING, ChangeLog, README, aclocal.m4, compile, config.h.in,
+	  depcomp, AUTHORS, INSTALL, Makefile.am, NEWS, configure.ac,
+	  mkinstalldirs, configure, install-sh, missing, Makefile.in,
+	  doc/Makefile.am, doc/Makefile.in, doc/header-html,
+	  doc/license.sgml, doc/ref.sgml, doc/styles.css, src/assert.h,
+	  src/getopt.h, src/getopt1.c, src/policy.c, src/toolwrap.h,
+	  src/utils.h, src/env_parser.y, src/getopt.c, src/getopt_int.h,
+	  src/hash.h, src/policies.default, src/toolwrap.c, src/utils.c,
+	  src/Makefile.am, src/assert.c, src/env.c, src/env.default,
+	  src/env.h, src/env_lex.l, src/env_parser.c, src/env_parser.h,
+	  src/hash.c, src/list.c, src/list.h, src/log.c, src/log.h,
+	  src/policy.h, src/Makefile.in, src/env_lex.c, src/toolwrap.1:
+	  Initial revision
+
+2005-03-11 22:32  bmonthy
+
+	* COPYING, ChangeLog, README, aclocal.m4, compile, config.h.in,
+	  depcomp, AUTHORS, INSTALL, Makefile.am, NEWS, configure.ac,
+	  mkinstalldirs, configure, install-sh, missing, Makefile.in,
+	  doc/Makefile.am, doc/Makefile.in, doc/header-html,
+	  doc/license.sgml, doc/ref.sgml, doc/styles.css, src/assert.h,
+	  src/getopt.h, src/getopt1.c, src/policy.c, src/toolwrap.h,
+	  src/utils.h, src/env_parser.y, src/getopt.c, src/getopt_int.h,
+	  src/hash.h, src/policies.default, src/toolwrap.c, src/utils.c,
+	  src/Makefile.am, src/assert.c, src/env.c, src/env.default,
+	  src/env.h, src/env_lex.l, src/env_parser.c, src/env_parser.h,
+	  src/hash.c, src/list.c, src/list.h, src/log.c, src/log.h,
+	  src/policy.h, src/Makefile.in, src/env_lex.c, src/toolwrap.1:
+	  initial import
+

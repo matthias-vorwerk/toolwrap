@@ -1,0 +1,22 @@
+
+26/04/05:  RELEASE 1.0.0 - BM
+
+* no bug or RFE reported from previous release. toolwrap seems to work pretty well, so I raise
+  version number to 1.0.0 (first "stable" release). 
+* add parsing error message
+* update documentation.
+
+29/03/05:  RELEASE 0.2 - BM
+
+* provide basename() fallback.
+* fix some #ifdef's  
+* fix manual page installation prefix
+* fix command line options parsing (POSIXILY_CORRECT behaviour)
+* fix install arguments (remove -C & -D switches)
+* should compiles cleanly on Linux (x86, amd64, alpha), *BSD, Solaris, OS X
+
+16/03/05:  RELEASE 0.1 - BM
+	
+* first toolwrap release for public use.
+
+	

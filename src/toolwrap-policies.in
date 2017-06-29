@@ -1,0 +1,7 @@
+#
+# default toolwrap-policies files
+#
+
+@PACKAGE_NAME@-@PACKAGE_VERSION@: toolwrap
+
+

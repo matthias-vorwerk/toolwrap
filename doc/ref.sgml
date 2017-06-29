@@ -1,0 +1,283 @@
+<!doctype linuxdoc system [
+<!entity GNULICENSE system "license.sgml">]>
+
+
+<article>
+<title>toolwrap reference guide
+<author>Bruno Monthy
+<abstract>toolwrap is wrapper program, used to set proper applications environment and start binaries according to predefined preferences.
+
+<toc>
+
+<!-- SECTION: INTRO -->
+
+<sect>Introduction
+<sect1>Packages management overview
+
+<p>
+Traditionally, UNIX programs are installed in standard locations (<tt>/opt/</tt>, <tt>/usr/local/</tt>, ...). While this works perfectly, problems arise when different releases of the same package must be deployed on a system, or when a binary (or a shared library, a manual page, ...) of a package interferes with other packages. Moreover, this method does not offer a proper way to remove a package from the system, and heavily relies on user environment setup ($PATH, $LD_LIBRARY_PATH).
+
+
+<sect1>What is toolwrap ?
+
+<p>
+toolwrap is a wrapper tool (a program which starts other program), which may be used to start applications according to defined preferences (or policies). Thanks to toolwrap, many releases of a given application can coexist, and may be deployed on a single workstation or made available on a files server. <ref id="policy" name="Policy files"> allow different users to use different versions transparently. <ref id="env" name="Environment files"> control which binaries to use and prepare the environment before starting the application.
+
+<sect2>Packages layout
+
+<p>toolwrap enables system administrators to keep applications (or packages) in meaningful locations.
+<p>i.e.:
+
+<verb>
+/opt/pkgs/myapplication-0.1
+/opt/pkgs/myapplication-0.2
+/opt/pkgs/make-3.79
+/opt/pkgs/openoffice.org-1.1.0
+...
+</verb>
+
+This methodology offers a clean way to install a package in its own directory hierarchy, thus enabling to remove it without disturbing the others installed applications. 
+
+<sect2>Applications revisions
+
+<p>
+toolwrap also enables users to select which revision of an application to run. Policies files control this. For example, when <tt>"make"</tt> is invoked from the command line, toolwrap may start <tt>/opt/pkgs/make-3.79/bin/make</tt> if a policy says to do so. Two users may have different preferences on which version of <tt>make</tt> to run. Thanks to their personal policies, the right binary will be started when they will invoke <tt>"make"</tt>.
+
+
+
+
+<!-- SECTION : INSTALLING -->
+
+<sect>Installing toolwrap
+<sect1>Getting toolwrap
+
+<sect2>cvs repository
+
+<p>
+<verb>
+cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/toolwrap login 
+cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/toolwrap co -P toolwrap
+</verb>
+
+<sect2>Tarballs (official releases)
+
+<p>
+
+All tarballs are available on SourceForge <url url="http://sourceforge.net/project/showfiles.php?group_id=133675"  name="'Files' page">.
+
+
+<sect1>Compiling
+
+<p>Compiling toolwrap should be as simple as :
+
+<verb>
+./configure --prefix=/opt &&\
+make
+</verb>
+
+
+<sect1>Installing
+
+<p>If toolwrap compiles successfully, run <tt>make install</tt> to get the following tree & files created (assuming that <tt>/opt</tt> was specified at the <tt>"configure"</tt> step):
+
+<tscreen>
+<verb>
+/opt
+/opt/bin/toolwrap
+/opt/pkgs
+/opt/etc
+/opt/etc/toolwrap-policies
+/opt/env
+/opt/env/__default__
+</verb>
+</tscreen>
+
+
+<itemize>
+<item> <tt>/opt/bin/toolwrap</tt> is the wrapper itself. Wrapped binaries will be symlinked to <tt>toolwrap</tt>.
+<item> <tt>/opt/etc/toolwrap-policies</tt> holds the default wrapping policies. See <ref id="policy" name="policy">. Policies indicate which package must be used when a tool is invoked.
+<item> <tt>/opt/etc/env/__default__</tt> defines how the environment must be set up before starting a tool, and which binary is executed.
+</itemize>
+
+<!-- SECTION WRAPPING -->
+
+<sect>Package wrapping
+
+<sect1>A sample wrapped application
+
+<p>
+Let's start with the a simple "Hello World" application. Let's assume that <tt>"helloworld.sh"</tt> is the shell script that says "Hello World!", and that toolwrap has been configured with <tt>--prefix=/opt</tt>.  <tt>helloworld.sh</tt> is the unique tool of the package named <tt>hello_world-1.0</tt>. Let's also assume that <tt>/opt/bin</tt> is in our <tt>$PATH</tt>.
+
+<p>To wrap this application, we have to:
+
+ <itemize>
+ 	<item>create the package repository:
+ 		<verb>
+ 			mkdir /opt/pkgs/hello_world-1.0
+ 			mkdir /opt/pkgs/hello_world-1.0/bin
+ 		</verb>
+ 	<item>copy the shell script in <tt/bin// directory:
+ 		<verb>
+ 			cp helloworld.sh /opt/pkgs/hello_world-1.0/bin
+ 		</verb>
+ 	<item>and start <tt>toolwrap --install &lt;pkg&gt;</tt>:
+ 		<verb>
+ 			toolwrap --install hello_world-1.0
+ 		</verb>
+ </itemize>
+ 
+<p><tt>toolwrap --install</tt> scans the <tt>bin/</tt> directory of the package, and creates a symbolic link to <tt>toolwrap</tt> for each binary found. It also creates a sample policy file <tt>/opt/etc/toolwrap-policies.hello_world-1.0</tt>. Copy this sample file over the default toolwrap policies file : 
+
+	<verb>
+		cat /opt/etc/toolwrap-policies.hello_world-1.0 >> /opt/etc/toolwrap-policies
+	</verb>
+
+<p>Now, let's try to start <tt>helloworld.sh</tt>. All the following methods may be used to achieve this:
+
+	<verb>
+	 (1)	helloworld.sh
+	 (2)	toolwrap helloworld.sh
+	 (3) 	toolwrap --pkg=hello_world-1.0 helloworld.sh
+	</verb>
+	
+<p>	When we invoke <tt>helloworld.sh</tt> from the command line (case 1), <tt>toolwrap</tt> is executed implicitly (remember that <tt>helloworld.sh</tt>  is symlinked to <tt>toolwrap</tt>). Then, <tt>toolwrap</tt> resolves the package (guess which package holds <tt>helloworld.sh</tt>). This step is achieved thanks to policies files. Finally, the environment is prepared ($PATH, $LD_LIBRARY_PATH, $MANPATH, $INFO_PATH, are redefined) and <tt>helloworld.sh</tt> script is executed.
+
+<p>Applications may also be explicitly by an explicit call to <tt>toolwrap</tt> (cases 2 & 3). In case 2, the package is resolved through policies files, whereas in case 3,no package resolution is performed and the package name is forced to <tt>hello_world-1.0</tt>.
+	
+<!-- SECTION POLICIES -->
+
+<sect>Policy files: package selection
+<label id="policy">
+
+<p>
+Policies files are used by <tt>toolwrap</tt> to resolve which package holds a given tool name.  
+
+<sect1>Policy file format
+<p>Format of these files is fairly simple: 
+
+	<verb>
+		PACKAGE-NAME : TOOL1 [TOOL2 [TOOL3 ...] ]
+	</verb>
+	
+<p>If you take a look at the policy file created by in the previous example, you should read:
+
+	<verb>
+  #
+  # toolwrap policy file for package hello-world-1.0
+
+  hello-world-1.0: helloworld.sh
+
+	</verb>
+	
+<p>This is a sample policy file created for GNU aspell:	
+
+	<verb>
+  #
+  # toolwrap policy file for package aspell-0.60.2
+
+  aspell-0.60.2: word-list-compress aspell prezip-bin run-with-aspell aspell-import prezip preunzip precat pspell-config
+  </verb>
+
+<p>Comment and empty lines are ignored.
+
+
+<sect1>General vs user policies files
+
+<p>
+<tt>toolwrap</tt> read the following files during the package resolution : 
+
+<itemize>
+	<item>&lt;prefix&gt;/etc/toolwrap-policies
+	<item><tt>$HOME</tt>/.toolwrap
+</itemize>
+
+<p>
+This enables user defined policies to override global settings.
+
+
+<!-- SECTION: env files -->
+
+<sect>Environment files: environment setup
+<label id="env">
+<p>
+Environment files goals:
+
+<itemize>
+<item>prepare the environment before the start of the application.
+<item>tells <tt>toolwrap</tt> which binary must be started.
+</itemize>
+
+<sect1>Files format
+
+<p>
+<verb>
+env-prepend VARIABLE VALUE
+env-append  VARIABLE VALUE
+env-set     VARIABLE VALUE
+
+requires    PACKAGE-NAME
+</verb>
+
+<p>
+<tt>env-prepend</tt>, <tt>env-append</tt> and <tt>env-set</tt> prepends, appends or sets the 
+<tt>VALUE</tt> to the given environment <tt>VARIABLE</tt>. <tt>requires</tt> includes the environment 
+of <tt>PACKAGE-NAME</tt> to the current environment.
+
+<sect1>Special variables
+<p>
+
+<itemize>
+	<item><tt>${TOOLWRAP_PKG}</tt> holds the name of the package (i.e.: <tt>hello_world-1.0</tt>)
+	<item><tt>${TOOLWRAP_PKGROOT}</tt> holds the root path of the package (i.e.:<tt>/opt/pkgs/hello_world-1.0/</tt>)
+	<item><tt>${TOOLWRAP_TOOL}</tt> holds the name of the tool (i.e.: <tt>helloworld.sh</tt>).
+</itemize>
+
+
+
+<sect1>The <tt>__default__</tt> environment file.
+<p>
+
+
+This file is used when no specific package environment file is found.
+
+<verb>
+#
+# generic environment file
+#
+
+# tells toolwrap which binary to execute
+
+env-set TOOLWRAP_BINARY ${TOOLWRAP_PKGROOT}/bin/${TOOLWRAP_TOOL}
+
+
+# standard environment set up
+#
+# Note: these variables should always be prepended to to current environment
+#
+env-prepend  LD_LIBRARY_PATH ${TOOLWRAP_PKGROOT}/lib
+env-prepend  PATH            ${TOOLWRAP_PKGROOT}/bin
+env-prepend  MANPATH         ${TOOLWRAP_PKGROOT}/man
+env-prepend  INFOPATH        ${TOOLWRAP_PKGROOT}/info
+</verb>
+
+
+<sect>Contacts
+
+<sect1>Source Forge Project Page
+
+<p>Source Forge project page: <url url="http://sourceforge.net/projects/toolwrap/" 
+	name="http://sourceforge.net/projects/toolwrap/">
+
+<sect1>Mailing-Lists
+<p>
+Mailing list: subscriptions & archives are available here : 
+	<url url="http://lists.sourceforge.net/lists/listinfo/toolwrap-users"
+		  name="http://lists.sourceforge.net/lists/listinfo/toolwrap-users">
+
+
+<sect>License
+
+&GNULICENSE
+
+
+</article>
