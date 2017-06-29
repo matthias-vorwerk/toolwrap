@@ -43,17 +43,17 @@ env_load_file(const char* file)
 {
 	env_lex_t* lex;
 	int ret;
-		
+
 	lex = env_lex_new(file);
 	if (!lex)
 	{
 		log_perror(LOG_ERR, "%s: ", file);
 		return 1;
 	}
-	
 
-	
-#ifdef ENV_DEBUG_PARSER	
+
+
+#ifdef ENV_DEBUG_PARSER
 	yydebug=1;
 #endif
 	ret = yyparse(lex);
@@ -74,53 +74,64 @@ env_load_from_package(const char* pkgname, const char* toolname)
 	char* cur_TOOL=NULL;
 	char* cur_PKGROOT=NULL;
 	int   env_backup;
-	
+
 	tmp=(char*) malloc (PATH_MAX);
-			
+
 	/*
-	 * save current state, as env. files may be recursive 
+	 * save current state, as env. files may be recursive
 	 */
-		
-	if (strcasecmp(pkgname, "__default__") != 0)
+
+/*	if (strcasecmp(pkgname, "__default__") != 0)
 	{
-		env_backup=1;
+*/		env_backup=1;
 		cur_PKG = getenv("TOOLWRAP_PKG");
 		cur_TOOL = getenv("TOOLWRAP_TOOLNAME");
 		cur_PKGROOT = getenv("TOOLWRAP_PKGROOT");
-	
+
 		setenv("TOOLWRAP_PKG", pkgname, 1);
 		if (toolname)
-			setenv("TOOLWRAP_TOOL", toolname, 1);	
+			setenv("TOOLWRAP_TOOL", toolname, 1);
 		snprintf(tmp, PATH_MAX, "%s/pkgs/%s", g_toolwrap_root, pkgname);
 		setenv("TOOLWRAP_PKGROOT", tmp, 1);
-	}
+/*	}
 	else
 		env_backup=0;
-		
-		
+*/
+
 	snprintf(tmp, PATH_MAX, "%s/env/%s", g_toolwrap_root, pkgname);
-	
+
 	if (g_flags & FL_DEBUG)
 		log_msg(LOG_DEBUG, "trying to load env file %s", tmp);
-		
+
 	if (access(tmp, R_OK) !=0)
 	{
 		if (g_flags & FL_DEBUG)
 			log_msg(LOG_DEBUG, "skipping env. file %s: not found", tmp);
-		free(tmp);
-		return 1;
+
+		snprintf(tmp, PATH_MAX, "%s/env/%s", g_toolwrap_root, "__default__");
+		if (g_flags & FL_DEBUG)
+			log_msg(LOG_DEBUG, "trying to load env file %s", tmp);
+
+		if (access(tmp, R_OK) !=0)
+		{
+			if (g_flags & FL_DEBUG)
+				log_msg(LOG_DEBUG, "skipping env. file %s: not found", tmp);
+			free(tmp);
+			return 1;
+		}
+
 	}
-	
+
 	ret = env_load_file(tmp);
 	free(tmp);
-	
+
 	if (env_backup)
 	{
 		if (cur_PKG) setenv("TOOLWRAP_PKG", cur_PKG, 1);
 		if (cur_TOOL) setenv("TOOLWRAP_TOOL", cur_TOOL, 1);
 		if (cur_PKGROOT) setenv("TOOLWRAP_PKGROOT", cur_PKGROOT, 1);
 	}
-	
+
 	return ret;
 }
 
