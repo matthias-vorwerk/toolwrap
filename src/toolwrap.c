@@ -205,6 +205,85 @@ load_env(const char* toolname)
 	return 0;
 }
 
+static int
+load_man_env(const char* toolname)
+{
+	char* tmp;
+	char* envfile ;
+	char* pkgname;
+	struct passwd *pwd;
+
+
+    tmp = (char*) malloc (PATH_MAX);
+	snprintf(tmp, PATH_MAX, "%s/etc/toolwrap-policies", g_toolwrap_root);
+
+	if (g_flags & FL_DEBUG)
+	{
+
+		log_msg(LOG_DEBUG, "toolwrap invoked: %s.", (g_flags & FL_INVOKED_EXPLICITLY) ? "explicitly":"implicitly");
+		log_msg(LOG_DEBUG, "tool name (man) : %s", toolname);
+		log_msg(LOG_DEBUG, "toolwrap root   : %s", g_toolwrap_root);
+		log_msg(LOG_DEBUG, "loading default policies file %s", tmp);
+	}
+
+	if (load_policy_file(tmp) != 0)
+	{
+		log_perror(LOG_DEBUG, "%s:", tmp);
+		return 1;
+	}
+
+	/*
+	 * if file TOOLWRAP_POLICIES is set then load this one
+	 */
+	if (envfile=getenv("TOOLWRAP_POLICIES"))
+	{
+		if ( access (envfile, R_OK)==0) {
+			if (g_flags & FL_DEBUG)
+				log_msg(LOG_DEBUG, "Loading TOOLWRAP_POLICIES file %s", envfile);
+			load_policy_file(envfile);
+		}
+	}
+
+	/*
+	 * load user policy file
+	 */
+	pwd = getpwuid(getuid());
+	if (pwd)
+	{
+		snprintf(tmp, PATH_MAX, "%s/.toolwrap", pwd->pw_dir);
+		if ( access (tmp, R_OK)==0)
+		{
+			if (g_flags & FL_DEBUG)
+				log_msg(LOG_DEBUG, "Trying user policy file %s", tmp);
+			load_policy_file(tmp);
+		}
+	}
+	free(tmp);
+
+	pkgname = g_pkgname;
+
+	if (!pkgname)
+		pkgname = resolve_pkg(toolname);
+
+	if (pkgname)
+	{
+		if ( (env_load_from_package("__init__", toolname) !=0) || env_load_from_package(pkgname, toolname)!=0 )
+		{
+			log_msg(LOG_INFO, "Could not parse environment file for package %s.", pkgname);
+			return 1;
+		}
+	}
+	else
+	{
+		if (g_flags & FL_DEBUG)
+			log_msg(LOG_DEBUG, "toolwrap man external ref.");
+	}
+
+	return 0;
+}
+
+
+
 static void
 exec_tool(const char* toolname, int argc, char** argv)
 {
@@ -241,9 +320,9 @@ exec_tool(const char* toolname, int argc, char** argv)
 static void
 exec_man(const char* toolname)
 {
-	if (load_env(toolname) != 0) exit(0);
+	if (load_man_env(toolname) != 0) exit(0);
 
-	execlp("man", "man", toolname, NULL);
+	execl("/usr/bin/man", "man", toolname, NULL);
 	log_perror(LOG_ERR, "man: ");
 }
 
@@ -469,7 +548,12 @@ int main(int argc, char** argv)
 
 		toolname = argv[optind];
 	}
-
+	else if (strcmp(whoami, "man")==0)
+	{
+		toolarg_pos = optind;
+		toolname = argv[optind];
+		g_mode = MODE_MAN;
+	}
 	else
 	{
 		/* toolwrap invoked implicitly */
