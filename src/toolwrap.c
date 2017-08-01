@@ -28,6 +28,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <sys/utsname.h>
 #include <unistd.h>
 #include <getopt.h>
 #include <pwd.h>
@@ -478,11 +479,12 @@ int main(int argc, char** argv)
 	char* toolname;
 
 	int   toolarg_pos;
+        struct utsname tw_uname;
 
 	g_flags = 0;
 	g_mode = MODE_EXEC;
 	g_pkgname = NULL;
-	setenv("TOOLWRAP_ARCH", "i686", 1);
+
 
 	if ((tmp=getenv("TOOLWRAP_ROOT")))
 		g_toolwrap_root = strdup(tmp);
@@ -563,6 +565,17 @@ int main(int argc, char** argv)
 	}
 	free(tmp);
 
+    /* detect architecture */
+    if (uname (&tw_uname) == -1)
+    {
+        log_msg(LOG_INFO, "Could not detect Architecture.");
+		return 1;
+    }
+
+	if (g_flags & FL_DEBUG)
+		log_msg(LOG_DEBUG, "detected architecture: TOOLWRAP_ARCH=%s.", tw_uname.machine );
+
+    setenv("TOOLWRAP_ARCH", tw_uname.machine, 1);
 
 	switch (g_mode)
 	{

@@ -228,7 +228,7 @@ yylex(YYSTYPE *yylval, env_lex_t* me)
 		break;
 
 	case 5:
-		return ENV_APPEND;
+		return REQUIRES;
 		break;
 
 	case 6:
