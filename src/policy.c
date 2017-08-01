@@ -23,12 +23,12 @@
 
 static hash_t* policies = NULL;
 
-static unsigned int 
+static unsigned int
 p_mkhash(const void* _x)
 {
 	char* x;
 	unsigned int h;
-	
+
 	h=0;
 	x=(char*)_x;
 	while (*x) h+=*x++;
@@ -40,41 +40,41 @@ p_strcmp(const void* _x, const void* _y)
 {
 	char* x=(char*)_x;
 	char* y=(char*)_y;
-	
+
 	return strcasecmp(x,y);
 }
 
 
-int 
+int
 load_policy_file(const char* filename)
 {
 	FILE* F;
-	char buffer[1024];
+	char buffer[8192];
 	char* line;
 	char *pkgname;
 	char* tmp;
 
-	
+
 	if (! policies)
 		policies = hash_new(p_strcmp, p_mkhash);
-		
+
 	F = fopen(filename, "r");
 	if (!F) return 1;
-	
-	while ((line=fgets(buffer, 1024, F)))
+
+	while ((line=fgets(buffer, 8192, F)))
 	{
 		if (line[0]=='#' || line[0]=='\r' || line[0]=='\n') continue;
 		while (*line && *line==' ') line++; /* eats leading spaces */
-		
+
 		tmp = strchr(line,':');
   	if (!tmp) continue;
   	pkgname =strndup(line,  tmp-line);
-  	
-	
+
+
   	line = tmp+1;
   	while (line && *line)
   	{
-	  	while (*line && *line==' ') line++;  	
+	  	while (*line && *line==' ') line++;
 	  	if (!*line) break;
 	  	tmp = strsep(&line, " \r\n");
 	  	while (*tmp && *tmp==' ') tmp++;
@@ -82,7 +82,7 @@ load_policy_file(const char* filename)
 	  	hash_append(policies, strdup(tmp), strdup(pkgname));
   	}
 	}
-	fclose(F);					
+	fclose(F);
 	return 0;
 }
 
