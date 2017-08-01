@@ -75,6 +75,7 @@ env_load_from_package(const char* pkgname, const char* toolname)
 	char* cur_TOOL=NULL;
 	char* cur_PKGROOT=NULL;
 	int   env_backup;
+	int   loaddefault;
 
 	tmp=(char*) malloc (PATH_MAX);
 
@@ -82,9 +83,10 @@ env_load_from_package(const char* pkgname, const char* toolname)
 	 * save current state, as env. files may be recursive
 	 */
 
-/*	if (strcasecmp(pkgname, "__default__") != 0)
+	if (strcasecmp(pkgname, "__init__") != 0)
 	{
-*/		env_backup=1;
+		env_backup=1;
+        loaddefault=1;
 		cur_PKG = getenv("TOOLWRAP_PKG");
 		cur_TOOL = getenv("TOOLWRAP_TOOLNAME");
 		cur_PKGROOT = getenv("TOOLWRAP_PKGROOT");
@@ -94,10 +96,13 @@ env_load_from_package(const char* pkgname, const char* toolname)
 			setenv("TOOLWRAP_TOOL", toolname, 1);
 		snprintf(tmp, PATH_MAX, "%s/pkgs/%s", g_toolwrap_root, pkgname);
 		setenv("TOOLWRAP_PKGROOT", tmp, 1);
-/*	}
+	}
 	else
+    {
 		env_backup=0;
-*/
+        loaddefault=0;      /* __init__ has no default */
+    }
+
 
 	snprintf(tmp, PATH_MAX, "%s/env/%s", g_toolwrap_root, pkgname);
 
@@ -109,18 +114,20 @@ env_load_from_package(const char* pkgname, const char* toolname)
 		if (g_flags & FL_DEBUG)
 			log_msg(LOG_DEBUG, "skipping env. file %s: not found", tmp);
 
-		snprintf(tmp, PATH_MAX, "%s/env/%s", g_toolwrap_root, "__default__");
-		if (g_flags & FL_DEBUG)
-			log_msg(LOG_DEBUG, "trying to load env file %s", tmp);
+        if (loaddefault)
+        {
+            snprintf(tmp, PATH_MAX, "%s/env/%s", g_toolwrap_root, "__default__");
+            if (g_flags & FL_DEBUG)
+                log_msg(LOG_DEBUG, "trying to load env file %s", tmp);
 
-		if (access(tmp, R_OK) !=0)
-		{
-			if (g_flags & FL_DEBUG)
-				log_msg(LOG_DEBUG, "skipping env. file %s: not found", tmp);
-			free(tmp);
-			return 1;
-		}
-
+            if (access(tmp, R_OK) !=0)
+            {
+                if (g_flags & FL_DEBUG)
+                    log_msg(LOG_DEBUG, "skipping env. file %s: not found", tmp);
+                free(tmp);
+                return 1;
+            }
+        }
 	}
 
 	ret = env_load_file(tmp);

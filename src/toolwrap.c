@@ -482,7 +482,7 @@ int main(int argc, char** argv)
 	g_flags = 0;
 	g_mode = MODE_EXEC;
 	g_pkgname = NULL;
-
+	setenv("TOOLWRAP_ARCH", "i686", 1);
 
 	if ((tmp=getenv("TOOLWRAP_ROOT")))
 		g_toolwrap_root = strdup(tmp);
