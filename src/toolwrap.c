@@ -319,12 +319,25 @@ exec_tool(const char* toolname, int argc, char** argv)
 
 
 static void
-exec_man(const char* toolname)
+exec_man(const char* toolname, int argc, char** argv)
 {
+	char** manargs;
+	int i;
+	int err;
 	if (load_man_env(toolname) != 0) exit(0);
 
-	execl("/usr/bin/man", "man", toolname, NULL);
-	log_perror(LOG_ERR, "man: ");
+	/* use external man */
+	/* create arguments list */
+	manargs = (char**) malloc ( (argc+2)* sizeof(char*));
+	for(i=1; i < argc; i++) 	manargs[i]=strdup(argv[i]);
+	manargs[i]=NULL;
+	manargs[0]="/usr/bin/man";
+
+	/* go !! */
+	err = execv(manargs[0], manargs);
+	/* hmm. something bad happened... */
+	log_perror(LOG_ERR, "%s:", manargs[0]);
+	exit(1);
 }
 
 
@@ -589,7 +602,7 @@ int main(int argc, char** argv)
 			break;
 
 		case MODE_MAN:
-			exec_man(toolname);
+			exec_man(toolname, argc - toolarg_pos + 1, argv+toolarg_pos-1);
 			break;
 
 		case MODE_INFO:
