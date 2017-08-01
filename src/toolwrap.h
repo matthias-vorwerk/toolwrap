@@ -31,8 +31,9 @@
 /*
  * global variables
  */
- 
+
 char* g_toolwrap_root;
+char* g_toolwrap_arch;
 int   g_flags;
 int   g_mode;
 

@@ -491,7 +491,8 @@ int main(int argc, char** argv)
 	else
 		g_toolwrap_root=TOOLWRAP_ROOT;
 
-	if (getenv("TOOLWRAP_DEBUG"))
+	if ( getenv("TOOLWRAP_DEBUG") &&
+        strcmp(getenv("TOOLWRAP_DEBUG"), "1")==0  )
 		g_flags |= FL_DEBUG;
 
 	tmp = strdup(argv[0]);
